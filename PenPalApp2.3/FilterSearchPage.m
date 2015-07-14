@@ -116,8 +116,8 @@
 
     
    
-    [searchPicker addSubview:_searchLabel];
-    [mainView addSubview:searchPicker];
+//    [searchPicker addSubview:_searchLabel];
+ //   [mainView addSubview:searchPicker];
     
 }
 

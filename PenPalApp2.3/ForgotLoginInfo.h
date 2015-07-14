@@ -18,5 +18,6 @@ extern UILabel *forgotLabel;
 - (IBAction)cancelButton;
 - (IBAction)submitButton;
 
+@property (strong) UIActivityIndicatorView *mySpinner;
 
 @end

@@ -12,20 +12,24 @@
 	<dict>
 		<key>42768ED99C21607371F7E19703970BD6A7299406</key>
 		<string>https://github.com/bluehack/PenPalApp2.4.git</string>
+		<key>93871C3F150DBF1BFC0450A2FC052ECC6475D723</key>
+		<string>https://github.com/sebi5/InterLocal.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>PenPalApp2.3.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>42768ED99C21607371F7E19703970BD6A7299406</key>
+		<string>../../../App_private</string>
+		<key>93871C3F150DBF1BFC0450A2FC052ECC6475D723</key>
 		<string>../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/bluehack/PenPalApp2.4.git</string>
+	<string>https://github.com/sebi5/InterLocal.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>42768ED99C21607371F7E19703970BD6A7299406</string>
+	<string>93871C3F150DBF1BFC0450A2FC052ECC6475D723</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
@@ -35,6 +39,14 @@
 			<string>42768ED99C21607371F7E19703970BD6A7299406</string>
 			<key>IDESourceControlWCCName</key>
 			<string>App_private</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>93871C3F150DBF1BFC0450A2FC052ECC6475D723</string>
+			<key>IDESourceControlWCCName</key>
+			<string>InterLocalApp</string>
 		</dict>
 	</array>
 </dict>

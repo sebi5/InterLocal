@@ -11,6 +11,7 @@
 #import "SLCountryPickerViewController.h"
 #import "InitView.h"
 #import "AppDelegate.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface EditProfilePage ()
 @property (nonatomic, strong) NSMutableData *responseData;
@@ -58,6 +59,9 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    
+
+    
   
     
     UIBarButtonItem *saveItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStylePlain target:self action:@selector(saveButton)];
@@ -69,10 +73,21 @@
     
     self.navigationItem.title = NSLocalizedString(@"Edit", nil);
     
+    
+    
+    UIView *spn = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.navigationController.toolbar.frame.size.height, self.navigationController.toolbar.frame.size.height)];
+    self.mySpinner = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, self.navigationController.toolbar.frame.size.height, self.navigationController.toolbar.frame.size.height)];
+    self.mySpinner.color = [UIColor blueColor];
+    self.mySpinner.hidesWhenStopped = YES;
+    [spn addSubview:self.mySpinner];
+    self.navigationItem.titleView = spn;
+    [self.mySpinner startAnimating];
+    
+    
     float width = self.view.frame.size.width - 15;
-    float height = 38;
+    float height = 40;
     float xPos = 15;
-    float yPos = 3;
+    float yPos = 10;
     
     float buttonWidth =  self.view.frame.size.width;
     float buttonHeight = 28;
@@ -209,12 +224,14 @@
     [_deleteAcct setTag:112];
     [_deleteAcct addTarget:self action:@selector(deleteProf) forControlEvents:UIControlEventTouchUpInside];
     
-    _profPic = [[UIButton alloc] initWithFrame: CGRectMake((self.view.frame.size.width - 80)/2, yPos + 7, 80, 80)];
+    _profPic = [[UIButton alloc] initWithFrame: CGRectMake((self.view.frame.size.width - 80)/2, yPos, 80, 80)];
     [_profPic setTitleColor:[UIColor blueColor] forState: UIControlStateNormal];
     [_profPic setTitleColor:[UIColor blueColor] forState: UIControlStateHighlighted];
     [_profPic setTitle:@"" forState:UIControlStateNormal]; // Profile Photo
     [_profPic setTag:113];
     [_profPic addTarget:self action:@selector(uploadPic) forControlEvents:UIControlEventTouchUpInside];
+    [[_profPic layer] setBorderWidth:1.0f];
+    [[_profPic layer] setBorderColor:[UIColor colorWithRed:51/255.0 green:51/255.0 blue:51/255.0 alpha:0.6].CGColor];
     
   
     UIImage *btnImage = [UIImage imageNamed:@"default.jpg"];
@@ -248,8 +265,8 @@
     [request setHTTPBody:postData];
     NSURLConnection *conn = [[NSURLConnection alloc] initWithRequest:request delegate:self];
     
-    [self.mySpinner stopAnimating];
-    self.navigationItem.titleView = nil;
+//    [self.mySpinner stopAnimating];
+//    self.navigationItem.titleView = nil;
     //self.navigationItem.title = NSLocalizedString(@"Edit", nil);
 }
 
@@ -304,6 +321,16 @@
              [_profPic setBackgroundImage:imageUpdate forState:UIControlStateNormal];
         }
         
+        [[NSUserDefaults standardUserDefaults] setObject:[NSString stringWithFormat:@"%@",username] forKey:@"profile_username"];
+        [[NSUserDefaults standardUserDefaults] setObject:[NSString stringWithFormat:@"%@",fullname] forKey:@"profile_fullname"];
+        [[NSUserDefaults standardUserDefaults] setObject:[NSString stringWithFormat:@"%@",bio] forKey:@"profile_bio"];
+        [[NSUserDefaults standardUserDefaults] setObject:[NSString stringWithFormat:@"%@",user_email] forKey:@"profile_user_email"];
+        [[NSUserDefaults standardUserDefaults] setObject:UIImagePNGRepresentation(imageUpdate) forKey:@"profile_user_photo"];
+        
+        
+        
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
         _usernameField.text = username;
         _fullnameField.text = fullname;
         _bioField.text = bio;
@@ -314,16 +341,77 @@
        
         //[_profPic setImage:btnImage forState:UIControlStateNormal];
  
-        [mainView reloadData];
         
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [mainView reloadData];
+            
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:1 inSection:1];
+            NSArray *indexPaths = [[NSArray alloc] initWithObjects:indexPath, nil];
+            
+            [self.mySpinner stopAnimating];
+            self.navigationItem.titleView = nil;
+           // [mainView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
+            
+        });
+        
+        
+        /*
+        //NSIndexPath *ppic = [NSIndexPath indexPathForItem:0 inSection:0];
+        NSIndexPath *pusername = [NSIndexPath indexPathForItem:1 inSection:0];
+        NSIndexPath *pfullname = [NSIndexPath indexPathForItem:1 inSection:1];
+        NSIndexPath *pemail = [NSIndexPath indexPathForItem:1 inSection:2];
+        //NSIndexPath *pbio = [NSIndexPath indexPathForItem:2 inSection:0];
+        
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:1 inSection:1];
+        NSArray *indexPaths = [[NSArray alloc] initWithObjects:indexPath, nil];
+
+        //[mainView beginUpdates];
+       // [mainView reloadRowsAtIndexPaths:@[ppic] withRowAnimation:UITableViewRowAnimationNone];
+       // [mainView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
+        //[mainView reloadRowsAtIndexPaths:@[pfullname] withRowAnimation:UITableViewRowAnimationNone];
+        //[mainView reloadRowsAtIndexPaths:@[pemail] withRowAnimation:UITableViewRowAnimationNone];
+       // [mainView reloadRowsAtIndexPaths:@[pbio] withRowAnimation:UITableViewRowAnimationNone];
+        //[mainView reloadRowsAtIndexPaths:@[ppic] withRowAnimation:UITableViewRowAnimationNone];
+        //[mainView endUpdates];
+         */
         
     }
     
 }
 
+- (void)reloadRow0Section0 {
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:1 inSection:1];
+    NSArray *indexPaths = [[NSArray alloc] initWithObjects:indexPath, nil];
+    [mainView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
+ 
+}
+
 
 -(void)viewWillAppear:(BOOL)animated{
+    
 
+
+    
+    NSString *profile_username = [[NSUserDefaults standardUserDefaults] stringForKey:@"profile_username"];
+    NSString *profile_fullname = [[NSUserDefaults standardUserDefaults] stringForKey:@"profile_fullname"];
+    
+    NSString *profile_bio = [[NSUserDefaults standardUserDefaults] stringForKey:@"profile_bio"];
+    NSString *profile_user_email = [[NSUserDefaults standardUserDefaults] stringForKey:@"profile_user_email"];
+    NSData* profile_user_photo = [[NSUserDefaults standardUserDefaults] objectForKey:@"profile_user_photo"];
+    
+   
+    _usernameField.text = profile_username;
+     _fullnameField.text = profile_fullname;
+    _bioField.text = profile_bio;
+    _emailField.text = profile_user_email;
+    
+    if (! profile_user_photo.length == 0  ) {
+        UIImage* prof_image = [UIImage imageWithData:profile_user_photo];
+        [_profPic setBackgroundImage:prof_image forState:UIControlStateNormal];
+    }
+    
+    // if no new data don't reload table
+   
     
 }
 
@@ -389,12 +477,10 @@ imagePicker.allowsEditing = YES; // NO
 
 -(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
-    UIView *spn = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.navigationController.toolbar.frame.size.height)];
-    
-    self.mySpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    self.mySpinner.center = CGPointMake(10, 10);
+    UIView *spn = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.navigationController.toolbar.frame.size.height, self.navigationController.toolbar.frame.size.height)];
+    self.mySpinner = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, self.navigationController.toolbar.frame.size.height, self.navigationController.toolbar.frame.size.height)];
+    self.mySpinner.color = [UIColor blueColor];
     self.mySpinner.hidesWhenStopped = YES;
-    
     [spn addSubview:self.mySpinner];
     self.navigationItem.titleView = spn;
     [self.mySpinner startAnimating];
@@ -508,6 +594,7 @@ imagePicker.allowsEditing = YES; // NO
             
             NSLog(@"Out: %@", returnString);
             
+          
             [self updateInfo];
             
         }
@@ -708,7 +795,8 @@ imagePicker.allowsEditing = YES; // NO
     if (indexPath.section == 0 && indexPath.row == 0) {
         return 100;
     }
-    return tableView.rowHeight;
+    // tableView.rowHeight +
+    return 60.0f;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -828,6 +916,8 @@ imagePicker.allowsEditing = YES; // NO
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
+
+
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     mainView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;

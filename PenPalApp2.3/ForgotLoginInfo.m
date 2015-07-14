@@ -116,6 +116,10 @@ UILabel *forgotLabel = nil;
     //NSLog(@"connectionDidFinishLoading");
     //NSLog(@"Succeeded! Received %lu bytes of data",(unsigned long)[self.responseData length]);
     
+    
+    [self.mySpinner stopAnimating];
+    self.navigationItem.titleView = nil;
+    
     // convert to JSON
     NSError *myError = nil;
     NSDictionary *res = [NSJSONSerialization JSONObjectWithData:self.responseData options:NSJSONReadingMutableLeaves error:&myError];
@@ -155,6 +159,14 @@ UILabel *forgotLabel = nil;
 
 
 -(IBAction)submitButton{
+    
+    UIView *spn = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.navigationController.toolbar.frame.size.height, self.navigationController.toolbar.frame.size.height)];
+    self.mySpinner = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, self.navigationController.toolbar.frame.size.height, self.navigationController.toolbar.frame.size.height)];
+    self.mySpinner.color = [UIColor blueColor];
+    self.mySpinner.hidesWhenStopped = YES;
+    [spn addSubview:self.mySpinner];
+    self.navigationItem.titleView = spn;
+    [self.mySpinner startAnimating];
     
     // alert if error
     

@@ -49,9 +49,9 @@ UIButton *birthButton = nil;
     self.view.backgroundColor = [UIColor grayColor];
     
     float width = self.view.frame.size.width - 15;
-    float height = 38;
+    float height = 40;
     float xPos = 15;
-    float yPos = 3;
+    float yPos = 10;
     
     float buttonWidth =  self.view.frame.size.width;
     float buttonHeight = 28;
@@ -379,6 +379,9 @@ UIButton *birthButton = nil;
     NSError *myError = nil;
     NSDictionary *res = [NSJSONSerialization JSONObjectWithData:self.responseData options:NSJSONReadingMutableLeaves error:&myError];
     
+    [self.mySpinner stopAnimating];
+    self.navigationItem.titleView = nil;
+    
     NSArray *res_arr = [res objectForKey:@"data"];
     NSDictionary *real_res = [res_arr objectAtIndex:0];
     NSString *code = [real_res objectForKey:@"code"];
@@ -397,6 +400,10 @@ UIButton *birthButton = nil;
     else{
         
         [self.view endEditing:YES];
+        
+        NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
+        [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:appDomain];
+        [[NSUserDefaults standardUserDefaults] synchronize];
         
         NSString *user_id = [real_res objectForKey:@"user_id"];
         NSString *user_pass = [real_res objectForKey:@"password"];
@@ -486,6 +493,14 @@ UIButton *birthButton = nil;
 }
 
 - (IBAction)submitButton{
+    
+    UIView *spn = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.navigationController.toolbar.frame.size.height, self.navigationController.toolbar.frame.size.height)];
+    self.mySpinner = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, self.navigationController.toolbar.frame.size.height, self.navigationController.toolbar.frame.size.height)];
+    self.mySpinner.color = [UIColor blueColor];
+    self.mySpinner.hidesWhenStopped = YES;
+    [spn addSubview:self.mySpinner];
+    self.navigationItem.titleView = spn;
+    [self.mySpinner startAnimating];
     
     
     // if data is good, proceed. Store user info as ints for fast upload & security
@@ -598,6 +613,12 @@ NSMutableString *filteredPhoneStringFromStringWithFilter(NSString *string, NSStr
     }
     outputString[onOutput] = '\0'; // Cap the output string
     return [NSMutableString stringWithUTF8String:outputString];
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+
+    return 60.0f;
 }
 
 /*

@@ -21,5 +21,7 @@ extern UILabel *loginErrorLable;
 -(IBAction) forgotLoginInfo;
 -(IBAction) login;
 
+@property (strong) UIActivityIndicatorView *mySpinner;
+
 
 @end

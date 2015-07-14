@@ -29,5 +29,6 @@ extern UIButton *birthButton;
 - (IBAction)submitButton;
 //@property(nonatomic,strong)ServerResponse *serverResponse;
 
+@property (strong) UIActivityIndicatorView *mySpinner;
 
 @end

@@ -33,9 +33,9 @@ UILabel *loginErrorLable = nil;
     
     
     float width = self.view.frame.size.width - 15;
-    float height = 38;
+    float height = 40;
     float xPos = 14;
-    float yPos = 4;
+    float yPos = 5;
     
     float buttonWidth = self.view.frame.size.width;
     float buttonHeight = 28;
@@ -72,9 +72,9 @@ UILabel *loginErrorLable = nil;
     loginPasswordTextField.delegate = self;
     
     
-    forgotButton = [[UIButton alloc] initWithFrame: CGRectMake(buttonX, yPos + 160, buttonWidth, buttonHeight)];
+    forgotButton = [[UIButton alloc] initWithFrame: CGRectMake(buttonX, yPos + 200, buttonWidth, buttonHeight)];
     [forgotButton setTitleColor:[UIColor colorWithRed:30/255.0 green:144/255.0 blue:255/255.0 alpha:1.0] forState: UIControlStateNormal];
-    forgotButton.titleLabel.font = [UIFont systemFontOfSize:14];
+    forgotButton.titleLabel.font = [UIFont systemFontOfSize:16];
     [forgotButton setTitleColor:[UIColor blueColor] forState: UIControlStateHighlighted];
     [forgotButton setTitle:@"Forgot Password Information?" forState:UIControlStateNormal];
     [forgotButton setTag:203];
@@ -161,6 +161,9 @@ UILabel *loginErrorLable = nil;
     NSString *message = [real_res objectForKey:@"message"];
     NSString *success = [real_res objectForKey:@"success"];
     
+    [self.mySpinner stopAnimating];
+    self.navigationItem.titleView = nil;
+    
     if (![code isEqualToString:@"0"]) {
         [loginErrorLable setTextColor:[UIColor redColor]];
         loginErrorLable.text = NSLocalizedString(message, @"Error");
@@ -219,6 +222,13 @@ UILabel *loginErrorLable = nil;
 - (IBAction)login{
     // might need this
     
+    UIView *spn = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.navigationController.toolbar.frame.size.height, self.navigationController.toolbar.frame.size.height)];
+    self.mySpinner = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, self.navigationController.toolbar.frame.size.height, self.navigationController.toolbar.frame.size.height)];
+    self.mySpinner.color = [UIColor blueColor];
+    self.mySpinner.hidesWhenStopped = YES;
+    [spn addSubview:self.mySpinner];
+    self.navigationItem.titleView = spn;
+    [self.mySpinner startAnimating];
     
     loginNameTextField.text = loginNameTextField.text;
     loginPasswordTextField.text = loginPasswordTextField.text;
@@ -255,16 +265,15 @@ UILabel *loginErrorLable = nil;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    
-    
     // Return the number of rows in the section.
-    
     return 2;
-    
-    
     
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 50.0f;
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
